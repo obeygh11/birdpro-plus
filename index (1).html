@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14532d">
+<title>BirdPro+ | Poultry Intelligence</title>
+<style>
+:root{--green:#14532d;--green2:#166534;--lime:#dcfce7;--ink:#17221b;--muted:#647067;--bg:#f4f8f4;--white:#fff;--line:#e1e9e2;--amber:#fff7df}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(120deg,#123c27,#19804a);color:white;padding:26px max(20px,calc((100% - 1120px)/2))}
+.brand{font-size:28px;font-weight:800;letter-spacing:-.5px}.brand span{color:#b7f7c9}header p{margin:7px 0 0;color:#e1f5e7}
+main{max-width:1120px;margin:24px auto;padding:0 18px}.welcome{display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap}.welcome h1{margin:0 0 6px;font-size:25px}.muted{color:var(--muted);line-height:1.5}
+.pill{background:var(--lime);color:var(--green);padding:8px 12px;border-radius:99px;font-size:13px;font-weight:bold}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:20px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 4px 18px #153b1b0a}.card h2{font-size:18px;margin:0 0 8px}.card p{font-size:14px;color:var(--muted);line-height:1.5}
+label{display:block;font-size:13px;font-weight:700;margin:13px 0 6px}input,select,textarea{width:100%;padding:11px;border:1px solid #cbd8ce;border-radius:9px;font:inherit;background:white}textarea{min-height:80px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+button{background:var(--green2);color:white;border:0;padding:11px 15px;border-radius:9px;font-weight:bold;cursor:pointer;margin-top:13px}button.secondary{background:#e8f3eb;color:var(--green)}.result{margin-top:12px;padding:12px;background:#eef8f0;border-radius:9px;font-size:14px;line-height:1.5;white-space:pre-wrap}
+.notice{background:var(--amber);border:1px solid #f2dfaa;padding:13px;border-radius:12px;font-size:13px;line-height:1.5;margin:18px 0}
+.small{font-size:12px;color:var(--muted)}.preview{max-width:100%;max-height:240px;display:none;margin-top:12px;border-radius:10px}
+footer{text-align:center;padding:28px 15px;color:var(--muted);font-size:12px}
+@media(max-width:720px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}header{padding:22px 18px}}
+</style>
+</head>
+<body>
+<header><div class="brand">BirdPro<span>+</span></div><p>Poultry intelligence for healthier birds and smarter farms</p></header>
+<main>
+<section class="welcome"><div><h1>Farm dashboard</h1><div class="muted">A practical starter workspace for your poultry operation.</div></div><div class="pill">Prototype · Version 0.1</div></section>
+<div class="notice"><strong>Important:</strong> This is an early prototype. Photo-based feed values and bird disease diagnoses are not validated. Use laboratory reports, qualified veterinary advice and trusted feed specifications for real decisions. Do not medicate birds based only on this tool.</div>
+<section class="grid">
+<div class="card"><h2>🥣 Feed nutrient record</h2><p>Enter values from a laboratory report or a reliable manufacturer specification.</p>
+<div class="row"><div><label for="protein">Crude protein (%)</label><input id="protein" type="number" min="0" step=".1" placeholder="e.g. 17.5"></div><div><label for="energy">Metabolizable energy (kcal/kg)</label><input id="energy" type="number" min="0" step="1" placeholder="e.g. 2750"></div></div>
+<div class="row"><div><label for="fibre">Crude fibre (%)</label><input id="fibre" type="number" min="0" step=".1" placeholder="Optional"></div><div><label for="fat">Crude fat (%)</label><input id="fat" type="number" min="0" step=".1" placeholder="Optional"></div></div>
+<label for="source">Source of values</label><input id="source" placeholder="Lab name, report date or supplier">
+<button onclick="saveFeed()">Save feed record</button><div id="feedResult" class="result" hidden></div></div>
+<div class="card"><h2>⚖️ Ingredient batch calculator</h2><p>Calculate ingredient weights from percentages. This does not balance a safe or nutritionally complete ration.</p>
+<label for="batch">Total batch size (kg)</label><input id="batch" type="number" min="0" step=".1" value="100">
+<label for="ingredients">Ingredient percentages (one per line, e.g. Maize, 55)</label><textarea id="ingredients" placeholder="Maize, 55&#10;Soybean meal, 25&#10;Wheat bran, 10"></textarea>
+<button onclick="calculateBatch()">Calculate weights</button><div id="batchResult" class="result" hidden></div></div>
+<div class="card"><h2>🔬 Microscope image notebook</h2><p>Store a local preview and label the type of microscope used. Images are not uploaded or analysed by AI.</p>
+<label for="scope">Microscope type</label><select id="scope"><option>Compound brightfield / light</option><option>Fluorescence</option><option>Phase-contrast</option><option>Dark-field</option><option>Stereo / dissecting</option><option>Polarizing</option><option>Confocal</option><option>Scanning electron (SEM)</option><option>Transmission electron (TEM)</option><option>Digital microscope</option></select>
+<label for="sample">Sample type</label><input id="sample" placeholder="e.g. faecal sample, feed ingredient, tissue slide">
+<label for="microImage">Choose microscope image</label><input id="microImage" type="file" accept="image/*"><img id="preview" class="preview" alt="Microscope image preview">
+<div class="small">Image preview stays in this browser session; it is not sent to a server.</div></div>
+<div class="card"><h2>🐔 Bird health observation</h2><p>Prepare clear observations to share with a poultry veterinarian.</p>
+<label for="signs">Signs observed</label><textarea id="signs" placeholder="Describe behaviour, droppings, breathing, appetite and when signs began"></textarea>
+<div class="row"><div><label for="affected">Number affected</label><input id="affected" type="number" min="0"></div><div><label for="deaths">Deaths today</label><input id="deaths" type="number" min="0"></div></div>
+<button onclick="makeVetNote()">Prepare vet handover note</button><div id="vetResult" class="result" hidden></div>
+<div class="small">Seek urgent veterinary help for sudden deaths, severe breathing difficulty, marked weakness or rapid spread.</div></div>
+<div class="card"><h2>📋 Daily flock record</h2><p>Record production and mortality. Data is saved only in this browser on this device.</p>
+<div class="row"><div><label for="recordDate">Date</label><input id="recordDate" type="date"></div><div><label for="eggs">Eggs collected</label><input id="eggs" type="number" min="0"></div></div>
+<div class="row"><div><label for="mortality">Deaths</label><input id="mortality" type="number" min="0"></div><div><label for="feedUsed">Feed used (kg)</label><input id="feedUsed" type="number" min="0" step=".1"></div></div>
+<label for="recordNotes">Notes</label><input id="recordNotes" placeholder="Optional observations">
+<button onclick="saveRecord()">Save daily record</button><button class="secondary" onclick="exportRecords()">Export records as CSV</button><div id="recordResult" class="result" hidden></div></div>
+<div class="card"><h2>💰 Simple farm cost calculator</h2><p>Enter figures to estimate the difference between sales and recorded costs.</p>
+<div class="row"><div><label for="sales">Sales income (GHS)</label><input id="sales" type="number" min="0" step=".01"></div><div><label for="costs">Costs (GHS)</label><input id="costs" type="number" min="0" step=".01"></div></div>
+<button onclick="calcProfit()">Calculate balance</button><div id="profitResult" class="result" hidden></div></div>
+</section>
+</main>
+<footer>BirdPro+ · Early prototype · Verify veterinary and nutrition decisions with qualified professionals.</footer>
+<script>
+const $=id=>document.getElementById(id);
+function show(id,msg){$(id).hidden=false;$(id).textContent=msg}
+function saveFeed(){const data={protein:$('protein').value,energy:$('energy').value,fibre:$('fibre').value,fat:$('fat').value,source:$('source').value,savedAt:new Date().toISOString()};localStorage.setItem('birdpro_feed',JSON.stringify(data));show('feedResult','Feed record saved on this device. Values are user-entered, not measured by this app.')}
+function calculateBatch(){const total=Number($('batch').value);const lines=$('ingredients').value.split('\n').map(x=>x.trim()).filter(Boolean);if(!(total>0)||!lines.length){show('batchResult','Enter a positive batch size and at least one ingredient.');return}let sum=0,out=[];for(const line of lines){const p=line.split(',');const name=p[0]?.trim();const pct=Number(p[1]);if(!name||!Number.isFinite(pct)||pct<0){show('batchResult','Check each line. Use: Ingredient name, percentage');return}sum+=pct;out.push(`${name}: ${(total*pct/100).toFixed(2)} kg`)}out.push(`Total percentages: ${sum.toFixed(2)}%`);if(Math.abs(sum-100)>.01)out.push('Warning: percentages should total 100% for a complete batch calculation.');show('batchResult',out.join('\n')+'\nThis is arithmetic only, not a balanced feed formula.')}
+$('microImage').addEventListener('change',e=>{const f=e.target.files[0];if(f){$('preview').src=URL.createObjectURL(f);$('preview').style.display='block'}});
+function makeVetNote(){const note=`Bird health observation\nDate: ${new Date().toLocaleDateString()}\nSigns: ${$('signs').value}\nNumber affected: ${$('affected').value}\nDeaths today: ${$('deaths').value}\nPlease assess and advise on appropriate tests and treatment.`;show('vetResult',note)}
+$('recordDate').value=new Date().toISOString().slice(0,10);
+function getRecords(){try{return JSON.parse(localStorage.getItem('birdpro_records')||'[]')}catch{return []}}
+function saveRecord(){const r={date:$('recordDate').value,eggs:$('eggs').value,mortality:$('mortality').value,feedKg:$('feedUsed').value,notes:$('recordNotes').value};const a=getRecords();a.push(r);localStorage.setItem('birdpro_records',JSON.stringify(a));show('recordResult','Daily record saved on this device. Export a CSV backup regularly.')}
+function exportRecords(){const a=getRecords();if(!a.length){show('recordResult','No records to export yet.');return}const keys=['date','eggs','mortality','feedKg','notes'];const csv=[keys.join(','),...a.map(r=>keys.map(k=>'"'+String(r[k]??'').replaceAll('"','""')+'"').join(','))].join('\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));const link=document.createElement('a');link.href=url;link.download='birdpro-flock-records.csv';link.click();URL.revokeObjectURL(url)}
+function calcProfit(){const s=Number($('sales').value||0),c=Number($('costs').value||0);show('profitResult',`Estimated balance: GHS ${(s-c).toFixed(2)}\nThis excludes any costs or income you have not entered.`)}
+</script>
+</body>
+</html>
